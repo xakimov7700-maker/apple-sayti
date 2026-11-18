@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Apple-style Home</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --tile: #f5f5f7;
+            --tile2: #fbfbfd;
+            --text: #1d1d1f;
+            --mute: #6e6e73;
+            --blue: #0071e3;
+            --link: #0066cc;
+            --nav: rgba(251, 251, 253, .8);
+            --line: #d2d2d7;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        @media (prefers-color-scheme:dark) {
+            :root:not([data-theme="light"]) {
+                color-scheme: dark;
+                --bg: #000;
+                --tile: #1d1d1f;
+                --tile2: #161617;
+                --text: #f5f5f7;
+                --mute: #a1a1a6;
+                --blue: #2997ff;
+                --link: #2997ff;
+                --nav: rgba(22, 22, 23, .8);
+                --line: #424245
+            }
+        }
+
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #000;
+            --tile: #1d1d1f;
+            --tile2: #161617;
+            --text: #f5f5f7;
+            --mute: #a1a1a6;
+            --blue: #2997ff;
+            --link: #2997ff;
+            --nav: rgba(22, 22, 23, .8);
+            --line: #424245
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        nav {
+            position: sticky;
+            top: env(safe-area-inset-top, 0px);
+            z-index: 20;
+            height: 48px;
+            background: var(--nav);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--line)
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0 0 auto;
+            height: env(safe-area-inset-top, 0px);
+            background: var(--nav);
+            backdrop-filter: blur(20px);
+            z-index: 30
+        }
+
+        .nav {
+            max-width: 1024px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+            font-size: 12px
+        }
+
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: clamp(12px, 3vw, 34px);
+            opacity: .85
+        }
+
+        .nav a:hover {
+            opacity: .6
+        }
+
+        .logo {
+            width: 16px;
+            height: 18px
+        }
+
+        .ic {
+            display: flex;
+            gap: 18px;
+            align-items: center
+        }
+
+        .burger {
+            display: none;
+            background: none;
+            border: 0;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer
+        }
+
+        @media(max-width:760px) {
+            .nav ul {
+                position: absolute;
+                top: 48px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--bg);
+                padding: 12px 22px 20px;
+                gap: 16px;
+                font-size: 17px;
+                display: none;
+                border-bottom: 1px solid var(--line)
+            }
+
+            .nav ul.open {
+                display: flex
+            }
+
+            .burger {
+                display: block
+            }
+        }
+
+        .promo {
+            background: var(--tile);
+            text-align: center;
+            font-size: 14px;
+            padding: 14px 22px
+        }
+
+        .promo a {
+            color: var(--link)
+        }
+
+        .hero {
+            text-align: center;
+            padding: 56px 22px 0;
+            background: var(--tile2);
+            overflow: hidden
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 7vw, 72px);
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1.05
+        }
+
+        .hero p {
+            font-size: clamp(19px, 2.6vw, 28px);
+            margin-top: 10px
+        }
+
+        .links {
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+            margin: 18px 0 0;
+            font-size: 19px;
+            flex-wrap: wrap
+        }
+
+        .links a {
+            color: var(--link)
+        }
+
+        .links a:hover {
+            text-decoration: underline
+        }
+
+        .btn {
+            background: var(--blue);
+            color: #fff !important;
+            padding: 9px 20px;
+            border-radius: 980px;
+            font-size: 17px
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            text-decoration: none !important
+        }
+
+        .stage {
+            height: 380px;
+            margin-top: 30px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 12px
+        }
+
+        .tile {
+            background: var(--tile);
+            border-radius: 22px;
+            text-align: center;
+            padding: 48px 22px 0;
+            overflow: hidden;
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative
+        }
+
+        .tile.wide {
+            grid-column: 1/-1;
+            min-height: 640px
+        }
+
+        .tile.dark {
+            background: #000;
+            color: #f5f5f7
+        }
+
+        .tile.dark .links a {
+            color: #2997ff
+        }
+
+        .tile.grad {
+            background: linear-gradient(160deg, #1c1c3a, #4b2a7b 55%, #d65a8d);
+            color: #fff
+        }
+
+        .tile.grad .links a {
+            color: #fff
+        }
+
+        .tile h2 {
+            font-size: clamp(32px, 4.6vw, 48px);
+            font-weight: 600;
+            letter-spacing: -.015em;
+            line-height: 1.08
+        }
+
+        .tile p {
+            font-size: clamp(17px, 2vw, 24px);
+            margin-top: 8px
+        }
+
+        .tile .links {
+            margin-top: 14px;
+            font-size: 17px
+        }
+
+        .art {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+            padding-top: 30px;
+            transition: transform .6s cubic-bezier(.2, .7, .2, 1)
+        }
+
+        .tile:hover .art {
+            transform: translateY(-8px) scale(1.03)
+        }
+
+        @media(max-width:760px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .tile {
+                min-height: 500px
+            }
+        }
+
+        /* devices */
+        .phone {
+            width: 200px;
+            height: 340px;
+            border-radius: 38px 38px 0 0;
+            background: linear-gradient(145deg, #3a3a3c, #111);
+            padding: 8px 8px 0;
+            box-shadow: 0 0 0 2px #555 inset, 0 30px 60px rgba(0, 0, 0, .35);
+            position: relative
+        }
+
+        .phone .scr {
+            height: 100%;
+            border-radius: 30px 30px 0 0;
+            background: linear-gradient(160deg, #ff9a5a, #ff3d77 45%, #5b4bff);
+            position: relative;
+            overflow: hidden
+        }
+
+        .phone .scr::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 64px;
+            height: 20px;
+            background: #000;
+            border-radius: 20px;
+            transform: translateX(-50%)
+        }
+
+        .phone .scr::after {
+            content: "";
+            position: absolute;
+            width: 160%;
+            height: 60%;
+            left: -30%;
+            bottom: -20%;
+            background: radial-gradient(closest-side, rgba(255, 255, 255, .55), transparent);
+            animation: float 6s ease-in-out infinite
+        }
+
+        .phone.sm {
+            width: 150px;
+            height: 300px;
+            margin-left: -36px;
+            transform: translateY(40px) rotate(-4deg);
+            background: linear-gradient(145deg, #c9d3e6, #7f8ba3)
+        }
+
+        .phone.sm .scr {
+            background: linear-gradient(160deg, #6ee7ff, #3b82f6 55%, #1e1b4b)
+        }
+
+        .camera {
+            position: absolute;
+            top: 22px;
+            right: 18px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .12);
+            backdrop-filter: blur(6px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            padding: 6px;
+            z-index: 2
+        }
+
+        .camera i {
+            border-radius: 50%;
+            background: #0a0a0a;
+            box-shadow: 0 0 0 2px #444 inset
+        }
+
+        @keyframes float {
+            50% {
+                transform: translateY(-18px)
+            }
+        }
+
+        .laptop {
+            width: min(460px, 90%);
+            position: relative
+        }
+
+        .laptop .top {
+            aspect-ratio: 16/10.4;
+            background: #0a0a0a;
+            border-radius: 14px 14px 0 0;
+            padding: 10px 10px 0;
+            box-shadow: 0 0 0 2px #444 inset
+        }
+
+        .laptop .scr {
+            height: 100%;
+            border-radius: 6px 6px 0 0;
+            background: radial-gradient(circle at 30% 30%, #7dd3fc, transparent 45%), radial-gradient(circle at 75% 70%, #c084fc, transparent 50%), #1e1b4b;
+            animation: hue 8s linear infinite
+        }
+
+        @keyframes hue {
+            to {
+                filter: hue-rotate(360deg)
+            }
+        }
+
+        .laptop .base {
+            height: 12px;
+            background: linear-gradient(#d4d4d8, #9ca3af);
+            border-radius: 0 0 14px 14px;
+            margin: 0 -4%
+        }
+
+        .watch {
+            width: 150px;
+            height: 190px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center
+        }
+
+        .watch::before,
+        .watch::after {
+            content: "";
+            position: absolute;
+            left: 35px;
+            width: 80px;
+            height: 70px;
+            background: linear-gradient(#ff8a3d, #c2410c)
+        }
+
+        .watch::before {
+            top: -40px;
+            border-radius: 12px 12px 0 0
+        }
+
+        .watch::after {
+            bottom: -40px;
+            border-radius: 0 0 12px 12px
+        }
+
+        .watch .face {
+            position: relative;
+            z-index: 2;
+            width: 140px;
+            height: 170px;
+            border-radius: 42px;
+            background: #000;
+            box-shadow: 0 0 0 5px #8e8e93, 0 20px 40px rgba(0, 0, 0, .4);
+            display: grid;
+            place-items: center
+        }
+
+        .clock {
+            width: 104px;
+            height: 104px;
+            border-radius: 50%;
+            border: 3px solid #333;
+            position: relative
+        }
+
+        .clock b {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            width: 3px;
+            background: #fff;
+            border-radius: 3px;
+            transform-origin: bottom;
+            animation: spin 60s linear infinite;
+            height: 44px
+        }
+
+        .clock b+b {
+            height: 32px;
+            animation-duration: 3600s;
+            background: #ff9f0a
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .tablet {
+            width: min(380px, 88%);
+            aspect-ratio: 4/3;
+            background: #111;
+            border-radius: 26px 26px 0 0;
+            padding: 12px 12px 0;
+            box-shadow: 0 0 0 2px #555 inset
+        }
+
+        .tablet .scr {
+            height: 100%;
+            border-radius: 16px 16px 0 0;
+            background: conic-gradient(from 200deg at 50% 120%, #f472b6, #fbbf24, #34d399, #60a5fa, #f472b6);
+        }
+
+        .pods {
+            display: flex;
+            gap: 26px;
+            align-items: flex-end
+        }
+
+        .pod {
+            width: 78px;
+            height: 150px;
+            border-radius: 40px 40px 34px 34px;
+            background: linear-gradient(#fff, #d4d4d8);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, .35)
+        }
+
+        .pod:nth-child(2) {
+            transform: translateY(24px) scaleX(-1)
+        }
+
+        .case {
+            width: 150px;
+            height: 100px;
+            border-radius: 44px 44px 0 0;
+            background: linear-gradient(#f4f4f5, #a1a1aa);
+            margin-left: -8px
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .9s ease, transform .9s ease
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: none
+        }
+
+        .strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            padding: 0 12px 12px
+        }
+
+        .card {
+            background: var(--tile);
+            border-radius: 22px;
+            padding: 28px 24px;
+            min-height: 190px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform .3s
+        }
+
+        .card:hover {
+            transform: translateY(-4px)
+        }
+
+        .card small {
+            color: var(--mute);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em
+        }
+
+        .card h3 {
+            font-size: 24px;
+            line-height: 1.15;
+            margin-top: 8px;
+            font-weight: 600
+        }
+
+        .card span {
+            font-size: 28px;
+            align-self: flex-end;
+            color: var(--blue)
+        }
+
+        footer {
+            background: var(--tile);
+            color: var(--mute);
+            font-size: 12px;
+            padding: 20px 22px 40px;
+            margin-top: 12px
+        }
+
+        footer div {
+            max-width: 1024px;
+            margin: 0 auto
+        }
+
+        footer p {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+            line-height: 1.5
+        }
+
+        footer .row {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            padding-top: 12px
+        }
+
+        footer a:hover {
+            text-decoration: underline
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav">
+            <a href="#top" aria-label="Home"><svg class="logo" viewBox="0 0 16 18" fill="currentColor">
+                    <path
+                        d="M8 4.2C8.6 2.6 10 1.6 11.6 1.5c.1 1.7-1.2 3.3-3.6 3.5zM8 5.3c-1.5-1-3.5-.6-4.7.8C1.7 8 2.2 11.7 4 14c.8 1.1 1.7 2.1 2.8 2 1-.1 1.4-.7 2.6-.7s1.5.7 2.6.7c1.1 0 1.9-1 2.6-2 .6-.8.9-1.6 1.1-2.1-2.3-.9-2.7-4.2-.4-5.5-1-1.4-2.700-1.700-3.600-1.600-1 .1-1.700.700-2.700.5z" />
+                </svg></a>
+            <ul id="menu">
+                <li><a href="#store">Store</a></li>
+                <li><a href="#phone">Phone</a></li>
+                <li><a href="#mac">Mac</a></li>
+                <li><a href="#ipad">Tablet</a></li>
+                <li><a href="#watch">Watch</a></li>
+                <li><a href="#audio">Audio</a></li>
+                <li><a href="#more">Support</a></li>
+            </ul>
+            <div class="ic"><span>⌕</span><span>🛍</span><button class="burger" id="bg" aria-label="Menu">☰</button>
+            </div>
+        </div>
+    </nav>
+    <div class="promo" id="top">Get up to 3% Daily Cash back with every purchase. <a href="#store">Learn more ›</a>
+    </div>
+
+    <section class="hero" id="store">
+        <h1>Phone Pro</h1>
+        <p>Hello, Pro.</p>
+        <div class="links"><a class="btn" href="#phone">Learn more</a><a href="#phone">Buy ›</a></div>
+        <div class="stage">
+            <div class="phone">
+                <div class="camera"><i></i><i></i><i></i></div>
+                <div class="scr"></div>
+            </div>
+            <div class="phone sm">
+                <div class="scr"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="tile reveal" id="mac">
+            <h2>Laptop Air</h2>
+            <p>Sky blue. Sky high.</p>
+            <div class="links"><a href="#">Learn more ›</a><a href="#">Buy ›</a></div>
+            <div class="art">
+                <div class="laptop">
+                    <div class="top">
+                        <div class="scr"></div>
+                    </div>
+                    <div class="base"></div>
+                </div>
+            </div>
+        </section>
+        <section class="tile dark reveal" id="watch">
+            <h2>Watch Series</h2>
+            <p>Smarter. Brighter. Mightier.</p>
+            <div class="links"><a href="#">Learn more ›</a><a href="#">Buy ›</a></div>
+            <div class="art">
+                <div class="watch">
+                    <div class="face">
+                        <div class="clock"><b></b><b></b></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="tile grad reveal wide" id="phone">
+            <h2>Phone</h2>
+            <p>A work of art, in your hand.</p>
+            <div class="links"><a href="#">Learn more ›</a><a href="#">Shop ›</a></div>
+            <div class="art">
+                <div class="phone">
+                    <div class="camera"><i></i><i></i><i></i></div>
+                    <div class="scr"></div>
+                </div>
+                <div class="phone sm">
+                    <div class="scr"></div>
+                </div>
+            </div>
+        </section>
+        <section class="tile reveal" id="ipad">
+            <h2>Tablet Pro</h2>
+            <p>Unbelievably thin. Incredibly powerful.</p>
+            <div class="links"><a href="#">Learn more ›</a><a href="#">Buy ›</a></div>
+            <div class="art">
+                <div class="tablet">
+                    <div class="scr"></div>
+                </div>
+            </div>
+        </section>
+        <section class="tile reveal" id="audio">
+            <h2>Pods</h2>
+            <p>Sound that moves with you.</p>
+            <div class="links"><a href="#">Learn more ›</a><a href="#">Buy ›</a></div>
+            <div class="art">
+                <div class="pods">
+                    <div class="pod"></div>
+                    <div class="pod"></div>
+                    <div class="case"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="strip reveal" id="more">
+        <a class="card" href="#">
+            <div><small>Services</small>
+                <h3>Music, TV and more</h3>
+            </div><span>+</span>
+        </a>
+        <a class="card" href="#">
+            <div><small>Trade In</small>
+                <h3>Get credit toward your next device</h3>
+            </div><span>+</span>
+        </a>
+        <a class="card" href="#">
+            <div><small>Cloud</small>
+                <h3>Keep everything safe and synced</h3>
+            </div><span>+</span>
+        </a>
+        <a class="card" href="#">
+            <div><small>Pay</small>
+                <h3>A safer way to pay</h3>
+            </div><span>+</span>
+        </a>
+    </div>
+
+    <footer>
+        <div>
+            <p>This page is a learning recreation of a modern product homepage layout. All names and artwork are
+                placeholders.</p>
+            <p>Copyright © 2026 Demo Inc. All rights reserved.</p>
+            <div class="row"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Sales and
+                    Refunds</a><a href="#">Legal</a><a href="#">Site Map</a></div>
+        </div>
+    </footer>
+
+    <script>
+        var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } }) }, { threshold: .12 });
+        document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el) });
+        var m = document.getElementById('menu');
+        document.getElementById('bg').addEventListener('click', function () { m.classList.toggle('open') });
+        m.addEventListener('click', function () { m.classList.remove('open') });
+    </script>
+</body>
+
+</html>
